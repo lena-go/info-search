@@ -10,11 +10,9 @@ import requests
 from bs4 import BeautifulSoup
 from nltk.tokenize import word_tokenize
 
-
 from user_agents import ua_list
 
 
-BASE_URL = 'https://gramota.ru'
 MIN_NUM_WORDS_PER_PAGE = 1000
 PAGES_FOLDER = 'pages'
 NUM_PAGES = 100
@@ -54,7 +52,8 @@ def get_html(url: str) -> str:
 def crawl_page(
         soup: BeautifulSoup,
         visited_urls: Queue,
-        urls: Queue
+        urls: Queue,
+        base_url: str,
 ) -> None:
     link_elements = soup.select('a[href]')
     for link_element in link_elements:
@@ -62,7 +61,7 @@ def crawl_page(
         if url == '/':
             continue
         if not url.startswith(('https://', 'http://')):
-            url = BASE_URL + url
+            url = base_url + url
         if (
                 url not in visited_urls.queue
                 and url not in urls.queue
@@ -86,18 +85,20 @@ def download_pages(
         pages: Queue,
         num_pages: int,
         lock: threading.Lock,
-) -> None:
+        base_url: str,
+) -> int:
     while not urls.empty() and num_pages < NUM_PAGES:
         current_url = urls.get()
         visited_urls.put(current_url)
         print(current_url)
         soup = BeautifulSoup(get_html(current_url), 'html.parser')
-        crawl_page(soup, visited_urls, urls)
+        crawl_page(soup, visited_urls, urls, base_url)
         urls.task_done()
         if get_content(soup, current_url, pages):
             lock.acquire()
             num_pages += 1
             lock.release()
+    return num_pages
 
 
 def save_index(pages: Queue) -> None:
@@ -125,23 +126,29 @@ def save_pages(pages: Queue):
 
 def run(addresses: [str]):
     urls = Queue()
-    urls.put(BASE_URL)
     visited_urls = Queue()
     pages = Queue()
-    num_pages = 0
     lock = threading.Lock()
-
+    num_pages = 0
     num_workers = 4
-    with ThreadPoolExecutor(max_workers=num_workers) as executor:
-        for _ in range(num_workers):
-            executor.submit(
-                download_pages,
-                urls,
-                visited_urls,
-                pages,
-                num_pages,
-                lock,
-            )
+    address_i = 0
+    while num_pages < NUM_PAGES:
+        base_url = addresses[address_i]
+        urls.put(base_url)
+        with ThreadPoolExecutor(max_workers=num_workers) as executor:
+            for _ in range(num_workers):
+                downloader = executor.submit(
+                    download_pages,
+                    urls,
+                    visited_urls,
+                    pages,
+                    num_pages,
+                    lock,
+                    base_url,
+                )
+                num_pages = downloader.result()
+                print(num_pages)
+        address_i += 1
 
     for i, page in enumerate(pages.queue):
         page.i = i
