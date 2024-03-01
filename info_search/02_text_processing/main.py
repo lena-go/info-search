@@ -48,7 +48,7 @@ class PageProcessor:
         with page_path.open(encoding='utf-8') as f:
             page = f.read()
         for symbol in self.punctuation:
-            page = page.replace(symbol, '')
+            page = page.replace(symbol, ' ')
 
         doc = Doc(page)
 
@@ -63,7 +63,6 @@ class PageProcessor:
             token.lemma for token in doc.tokens
             if token.lemma not in stopwords.words('russian')
         ])
-        # print(lemmatized_text)
         self.save_processed_page(filename.split('/')[1], lemmatized_text)
 
     def process_pages(self, files: Queue):
