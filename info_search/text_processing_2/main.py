@@ -61,8 +61,9 @@ class PageProcessor:
 
         lemmatized_text = ' '.join([
             token.lemma for token in doc.tokens
-            if token.lemma not in stopwords.words('russian')
+            if (token.lemma not in stopwords.words('russian') and token.lemma != '.')
         ])
+        print(lemmatized_text)
         self.save_processed_page(filename.split('/')[1], lemmatized_text)
 
     def process_pages(self, files: Queue):
