@@ -121,6 +121,10 @@ def sort_index(index: InvertedIndex):
     return InvertedIndex(sorted(index.items()))
 
 
-def save_inv_index(index: InvertedIndex) -> None:
-    with open('inverted_index.json', 'w') as f:
-        json.dump(index, f, indent=4)
+def save_inv_index(index: InvertedIndex, rewrite: bool = False) -> None:
+    inv_index_path = Path('inverted_index.json')
+    if inv_index_path.exists() and not rewrite:
+        return
+    serializable_index = {key: list(values) for key, values in index.items()}
+    with inv_index_path.open('w', encoding='utf-8') as f:
+        json.dump(serializable_index, f, ensure_ascii=False, indent=4)
