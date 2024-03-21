@@ -10,7 +10,7 @@ import requests
 from bs4 import BeautifulSoup
 from nltk.tokenize import word_tokenize
 
-from user_agents import ua_list
+from info_search.crawler_1.user_agents import ua_list
 
 
 MIN_NUM_WORDS_PER_PAGE = 1000
