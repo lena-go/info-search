@@ -16,6 +16,7 @@ from info_search.crawler_1.user_agents import ua_list
 MIN_NUM_WORDS_PER_PAGE = 1000
 PAGES_FOLDER = 'pages'
 NUM_PAGES = 100
+INDEX_NAME = 'index.txt'
 
 
 parser = argparse.ArgumentParser(
@@ -102,7 +103,7 @@ def download_pages(
 
 
 def save_index(pages: Queue) -> None:
-    path = Path('..', 'index.txt')
+    path = Path('..', INDEX_NAME)
     with path.open(mode='w', encoding='utf-8') as f:
         f.writelines(map(
             lambda page: f"{PAGES_FOLDER}/{page.i}.txt {page.url}\n",
