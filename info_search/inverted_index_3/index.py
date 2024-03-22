@@ -122,7 +122,7 @@ def sort_index(index: InvertedIndex):
 
 
 def save_inv_index(index: InvertedIndex, rewrite: bool = False) -> None:
-    inv_index_path = Path('inverted_index.json')
+    inv_index_path = Path('..', 'inverted_index.json')
     if inv_index_path.exists() and not rewrite:
         return
     serializable_index = {key: list(values) for key, values in index.items()}
