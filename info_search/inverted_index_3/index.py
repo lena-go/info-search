@@ -4,7 +4,7 @@ from pathlib import Path
 
 from info_search.crawler_1.main import INDEX_NAME
 from info_search.text_processing_2.main import PROCESSED_PAGES_FOLDER
-from nodes import (
+from info_search.inverted_index_3.nodes import (
     fabricate_operator,
     Operand,
     Operator,
@@ -17,6 +17,12 @@ from nodes import (
 class IncorrectExpression(Exception):
     def __init__(self):
         message = 'Expression is incorrect'
+        super().__init__(message)
+
+
+class NoInvertedIndexFile(Exception):
+    def __init__(self):
+        message = 'File of inverted index was not found. Run main.py at first then try again.'
         super().__init__(message)
 
 
@@ -122,10 +128,25 @@ def sort_index(index: InvertedIndex):
     return InvertedIndex(sorted(index.items()))
 
 
+def get_inv_index_path() -> Path:
+    return Path('..', 'inverted_index.json')
+
+
 def save_inv_index(index: InvertedIndex, rewrite: bool = False) -> None:
-    inv_index_path = Path('..', 'inverted_index.json')
+    inv_index_path = get_inv_index_path()
     if inv_index_path.exists() and not rewrite:
         return
     serializable_index = {key: list(values) for key, values in index.items()}
     with inv_index_path.open('w', encoding='utf-8') as f:
         json.dump(serializable_index, f, ensure_ascii=False, indent=4)
+
+
+def load_inv_index_from_file() -> InvertedIndex:
+    inv_index_path = get_inv_index_path()
+    if not inv_index_path.exists():
+        raise NoInvertedIndexFile
+    with inv_index_path.open('r', encoding='utf-8') as f:
+        inv_index = InvertedIndex(json.load(f))
+    for key, values in inv_index.items():
+        inv_index[key] = set(values)
+    return inv_index
