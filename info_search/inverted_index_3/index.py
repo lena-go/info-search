@@ -55,6 +55,7 @@ class InvertedIndex(dict):
                 nodes.append(Operand(docs, word))
         return nodes
 
+    @staticmethod
     def reduce_nodes(self, nodes: [Operand | Operator]) -> Operand:
         operators_precedence = [LogicalNot, LogicalAnd, LogicalOr]
         for operator_i in range(len(operators_precedence)):

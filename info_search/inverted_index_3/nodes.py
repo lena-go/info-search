@@ -45,9 +45,7 @@ class LogicalNot(UnaryOperator):
     @staticmethod
     def replace_with_new_operand(nodes: [Operand, Operator], operator_idx: int):
         next_node = nodes[operator_idx + 1]
-        # all_docs = {i for i in range(NUM_PAGES)}
         del nodes[operator_idx: operator_idx + 2]
-        # merged_node = Operand(all_docs - next_node.docs)
         merged_node = Operand(-next_node)
         nodes.insert(operator_idx, merged_node)
 
