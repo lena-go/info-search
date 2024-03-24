@@ -1,6 +1,5 @@
-import csv
-
 from info_search.inverted_index_3.index import Page, InvertedIndex
+from info_search.tf_idf_4.services import save_list_as_table
 
 
 class TFVec:
@@ -13,7 +12,7 @@ class TFVec:
                 if val > 0:
                     vec[word] = round(vec[word], max_signs)
 
-    def calc_tf(
+    def calc(
             self,
             docs: [Page],
             lexicon_volume: int,
@@ -37,11 +36,5 @@ class TFVec:
         if do_round:
             self.round_tf_vecs(max_signs=max_signs)
 
-    def save_as_table(self):
-        with open('tf.csv', 'w', encoding='utf-8', newline='') as file:
-            writer = csv.writer(file)
-            total_docs = len(self.vecs)
-            writer.writerow(['term'] + list(range(total_docs)))
-            for term in self.vecs[0]:
-                row = [term] + [self.vecs[i][term] for i in range(total_docs)]
-                writer.writerow(row)
+    def save_as_table(self) -> None:
+        save_list_as_table(self.vecs, 'tf.csv')

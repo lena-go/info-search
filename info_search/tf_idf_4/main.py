@@ -6,6 +6,7 @@ from info_search.inverted_index_3.index import (
 )
 from info_search.tf_idf_4.tf import TFVec
 from info_search.tf_idf_4.idf import IDFVec
+from info_search.tf_idf_4.tfidf import TFIDFVecs
 
 
 def run():
@@ -14,12 +15,16 @@ def run():
     lexicon_volume = len(inv_index)
 
     tf_vecs = TFVec()
-    tf_vecs.calc_tf(docs, lexicon_volume, inv_index)
+    tf_vecs.calc(docs, lexicon_volume, inv_index)
     tf_vecs.save_as_table()
 
     idf_vec = IDFVec()
-    idf_vec.calc_idf(inv_index)
+    idf_vec.calc(inv_index)
     idf_vec.save_as_table()
+
+    tfidf_vecs = TFIDFVecs(tf_vecs.vecs, idf_vec.vec)
+    tfidf_vecs.calc()
+    tfidf_vecs.save_as_table()
 
 
 if __name__ == '__main__':
