@@ -1,4 +1,5 @@
 import csv
+import math
 
 from info_search.inverted_index_3.index import InvertedIndex
 
@@ -18,7 +19,10 @@ class IDFVec:
             return
         self.vec = {}
         for word, doc_indices in inv_index.items():
-            self.vec[word] = round(self.total_docs / len(doc_indices), max_signs)
+            self.vec[word] = round(
+                math.log(self.total_docs / len(doc_indices)),
+                max_signs
+            )
 
     def save_as_table(self):
         with open('idf.csv', 'w', encoding='utf-8', newline='') as file:
