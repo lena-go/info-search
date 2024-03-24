@@ -546,6 +546,20 @@ files = [
 ]
 
 [[package]]
+name = "tabulate"
+version = "0.9.0"
+description = "Pretty-print tabular data"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tabulate-0.9.0-py3-none-any.whl", hash = "sha256:024ca478df22e9340661486f85298cff5f6dcdba14f3813e8830015b9ed1948f"},
+    {file = "tabulate-0.9.0.tar.gz", hash = "sha256:0095b12bf5966de529c0feb1fa08671671b3368eec77d7ef7ab114be2c068b3c"},
+]
+
+[package.extras]
+widechars = ["wcwidth"]
+
+[[package]]
 name = "tqdm"
 version = "4.66.2"
 description = "Fast, Extensible Progress Meter"
@@ -599,4 +613,4 @@ pymorphy2 = "*"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "926c69fa5c86d5d5b439f3e24056531d07487a3e177e28f71621d26881b7c53a"
+content-hash = "28b1a0faa4d8465c9fe394409e80cd0d6c38b199ee649e81a6e3f175a6d182f4"
