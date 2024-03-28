@@ -1,7 +1,7 @@
 from info_search.tf_idf_4.services import save_list_as_table
 
 
-class TFIDFVecs:
+class TFIDFVec:
     def __init__(self, tf_vecs: [{str: int}], idf_vec: {str: int}):
         self.tf_vecs = tf_vecs
         self.idf_vec = idf_vec
