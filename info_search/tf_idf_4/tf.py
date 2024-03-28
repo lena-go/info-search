@@ -5,8 +5,9 @@ from info_search.tf_idf_4.services import save_list_as_table
 
 
 class TFVec:
-    def __init__(self):
+    def __init__(self, inv_index: InvertedIndex):
         self.vecs = []
+        self.initial_doc_vec = {k: 0 for k in inv_index.keys()}
 
     def round_tf_vecs(self, max_signs: int):
         for vec in self.vecs:
@@ -14,10 +15,9 @@ class TFVec:
                 if val > 0:
                     vec[word] = round(vec[word], max_signs)
 
-    def calc(
+    def calc_for_corpus(
             self,
             docs: [Page],
-            inv_index: InvertedIndex,
             do_round: bool = True,
             max_signs: int = 5,
             rewrite: bool = True,
@@ -25,18 +25,22 @@ class TFVec:
         if self.vecs and not rewrite:
             return
         self.vecs = []
-        initial_doc_vec = {k: 0 for k in inv_index.keys()}
         for i, doc in enumerate(docs):
-            doc_vec = initial_doc_vec.copy()
-            token_counts = Counter(doc.words)
-            for term, freq in token_counts.items():
-                try:
-                    doc_vec[term] = freq / len(doc)
-                except KeyError:
-                    print(f'No word {term}. Update inverted index')
-            self.vecs.append(doc_vec)
+            self.vecs.append(
+                self.calc(doc.words)
+            )
         if do_round:
             self.round_tf_vecs(max_signs=max_signs)
+
+    def calc(self, words: [str]) -> {str: float}:
+        doc_vec = self.initial_doc_vec.copy()
+        token_counts = Counter(words)
+        for term, freq in token_counts.items():
+            try:
+                doc_vec[term] = freq / len(words)
+            except KeyError:
+                print(f'No word {term}. Update inverted index')
+        return doc_vec
 
     def save_as_table(self) -> None:
         save_list_as_table(self.vecs, 'tf.csv')
