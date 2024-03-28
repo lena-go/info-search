@@ -9,21 +9,27 @@ from info_search.tf_idf_4.idf import IDFVec
 from info_search.tf_idf_4.tfidf import TFIDFVec
 
 
-def run():
+def calc_vecs_for_corpus() -> (TFIDFVec, TFVec, IDFVec):
     inv_index = load_inv_index_from_file()
     docs = PageReader().parse_pages()
 
     tf_vecs = TFVec(inv_index)
     tf_vecs.calc_for_corpus(docs)
-    tf_vecs.save_as_table()
 
     idf_vec = IDFVec()
-    idf_vec.calc(inv_index)
-    idf_vec.save_as_table()
+    idf_vec.calc_for_corpus(inv_index)
 
     tfidf_vecs = TFIDFVec(tf_vecs.vecs, idf_vec.vec)
-    tfidf_vecs.calc()
-    tfidf_vecs.save_as_table()
+    tfidf_vecs.calc_for_corpus()
+
+    return tfidf_vecs, tf_vecs, idf_vec
+
+
+def run():
+    tf, idf, tfidf = calc_vecs_for_corpus()
+    tf.save_as_table()
+    idf.save_as_table()
+    tfidf.save_as_table()
 
 
 if __name__ == '__main__':

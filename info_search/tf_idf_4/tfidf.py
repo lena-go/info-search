@@ -7,7 +7,7 @@ class TFIDFVec:
         self.idf_vec = idf_vec
         self.tfidf_vecs = []
 
-    def calc(self, rewrite: bool = True, max_signs: int = 5) -> None:
+    def calc_for_corpus(self, rewrite: bool = True, max_signs: int = 5) -> None:
         if self.tfidf_vecs and not rewrite:
             return
         self.tfidf_vecs = []

@@ -9,7 +9,7 @@ class IDFVec:
         self.vec = {}
         self.total_docs = total_docs
 
-    def calc(
+    def calc_for_corpus(
             self,
             inv_index: InvertedIndex,
             max_signs: int = 5,
