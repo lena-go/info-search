@@ -1,3 +1,5 @@
+from collections import Counter
+
 from info_search.inverted_index_3.index import Page, InvertedIndex
 from info_search.tf_idf_4.services import save_list_as_table
 
@@ -15,7 +17,6 @@ class TFVec:
     def calc(
             self,
             docs: [Page],
-            lexicon_volume: int,
             inv_index: InvertedIndex,
             do_round: bool = True,
             max_signs: int = 5,
@@ -27,11 +28,12 @@ class TFVec:
         initial_doc_vec = {k: 0 for k in inv_index.keys()}
         for i, doc in enumerate(docs):
             doc_vec = initial_doc_vec.copy()
-            for word in doc.words:
+            token_counts = Counter(doc.words)
+            for term, freq in token_counts.items():
                 try:
-                    doc_vec[word] += 1 / lexicon_volume
+                    doc_vec[term] = freq / len(doc)
                 except KeyError:
-                    print(f'No word {word}. Update inverted index')
+                    print(f'No word {term}. Update inverted index')
             self.vecs.append(doc_vec)
         if do_round:
             self.round_tf_vecs(max_signs=max_signs)

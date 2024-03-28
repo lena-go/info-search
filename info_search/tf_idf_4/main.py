@@ -12,10 +12,9 @@ from info_search.tf_idf_4.tfidf import TFIDFVecs
 def run():
     inv_index = load_inv_index_from_file()
     docs = PageReader().parse_pages()
-    lexicon_volume = len(inv_index)
 
     tf_vecs = TFVec()
-    tf_vecs.calc(docs, lexicon_volume, inv_index)
+    tf_vecs.calc(docs, inv_index)
     tf_vecs.save_as_table()
 
     idf_vec = IDFVec()
