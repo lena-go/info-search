@@ -35,13 +35,16 @@ class Page:
     def __repr__(self):
         return f"{self.i_str} - {self.url}"
 
+    def __len__(self):
+        return len(self.words)
+
 
 class InvertedIndex(dict):
     def lookup(self, expression: str):
         nodes = self.parse_expression(expression)
         answer = set()
         try:
-            answer = self.reduce_nodes(nodes).docs
+            answer = sorted(self.reduce_nodes(nodes).docs)
         except IncorrectExpression as e:
             print(e)
         return answer
