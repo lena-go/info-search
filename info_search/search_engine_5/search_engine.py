@@ -76,12 +76,12 @@ class SearchEngine:
         self.update_weights(query_vec, relevant_docs)
         return sorted(relevant_docs, key=lambda doc: doc.weight, reverse=True)
 
-    def search(self, query: str) -> [RelevantDoc]:
+    def search(self, query: str, print_meta: bool = False) -> [RelevantDoc]:
         all_query_lemmas = self.preprocess_query(query)
         query_lemmas = []
         for term in all_query_lemmas:
             if term in self.inv_index:
                 query_lemmas.append(term)
-        query_vec = self.calc_query_vec(query_lemmas, True)
+        query_vec = self.calc_query_vec(query_lemmas, print_meta)
         search_results = self.get_relevant_docs(query_vec, query_lemmas)
         return search_results
