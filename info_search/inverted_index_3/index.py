@@ -151,7 +151,7 @@ def save_inv_index(index: InvertedIndex, rewrite: bool = False) -> None:
     inv_index_path = get_inv_index_path()
     if inv_index_path.exists() and not rewrite:
         return
-    serializable_index = {key: list(values) for key, values in index.items()}
+    serializable_index = {key: sorted(list(values)) for key, values in index.items()}
     with inv_index_path.open('w', encoding='utf-8') as f:
         json.dump(serializable_index, f, ensure_ascii=False, indent=4)
 
