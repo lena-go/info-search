@@ -1,6 +1,7 @@
 import re
 import json
 from pathlib import Path
+from typing import Type
 
 from info_search.crawler_1.main import INDEX_NAME
 from info_search.text_processing_2.main import PROCESSED_PAGES_FOLDER
@@ -65,13 +66,24 @@ class InvertedIndex(dict):
         return nodes
 
     @staticmethod
-    def reduce_nodes(nodes: [Operand | Operator]) -> Operand:
+    def contains_operator(
+            nodes: [Operand | Operator],
+            operator_type: Type[LogicalNot | LogicalAnd | LogicalOr],
+    ) -> bool:
+        for node in nodes:
+            if isinstance(node, operator_type):
+                return True
+        return False
+
+    def reduce_nodes(self, nodes: [Operand | Operator]) -> Operand:
         operators_precedence = [LogicalNot, LogicalAnd, LogicalOr]
-        for operator_i in range(len(operators_precedence)):
-            for node in nodes:
-                if isinstance(node, operators_precedence[operator_i]):
-                    operator_idx = nodes.index(node)
-                    node.replace_with_new_operand(nodes, operator_idx)
+        for operator in operators_precedence:
+            while self.contains_operator(nodes, operator):
+                for node in nodes:
+                    if isinstance(node, operator):
+                        operator_idx = nodes.index(node)
+                        node.replace_with_new_operand(nodes, operator_idx)
+                        break
 
         if not isinstance(nodes[0], Operand) or len(nodes) != 1:
             raise IncorrectExpression
