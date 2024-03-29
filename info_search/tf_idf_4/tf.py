@@ -36,10 +36,7 @@ class TFVec:
         doc_vec = self.initial_doc_vec.copy()
         token_counts = Counter(words)
         for term, freq in token_counts.items():
-            try:
-                doc_vec[term] = freq / len(words)
-            except KeyError:
-                print(f'No word {term}. Update inverted index')
+            doc_vec[term] = freq / len(words)
         return doc_vec
 
     def save_as_table(self) -> None:
