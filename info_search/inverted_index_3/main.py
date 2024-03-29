@@ -26,12 +26,11 @@ def get_inv_index(rewrite_index: bool = False) -> InvertedIndex:
 
 def run(rewrite_index: bool = False):
     inv_index = get_inv_index(rewrite_index)
-    # while True:
-    # print('Enter your query:')
-    # query = input()
-    query = 'противительный ИЛИ видеться ИЛИ видимо'
-    results = inv_index.lookup(query)
-    print(results)
+    while True:
+        print('Enter your query:')
+        query = input()
+        results = inv_index.lookup(query)
+        print(results)
 
 
 if __name__ == '__main__':
@@ -42,7 +41,6 @@ Examples:
  противительный: 15, 16, 18, 22
  противник: 15
  видимо: 16, 18, 29, 57, 96
- видеться: 88
  
  противительный И противник ИЛИ видимо
  противительный ИЛИ противник ИЛИ видимо
